@@ -27,6 +27,33 @@ const acl = { undefined, emptyAcl, filledAcl };
 const testDate = new Date().toJSON();
 
 const testVersioningConfiguration = { Status: 'Enabled' };
+
+const testWebsiteConfiguration = {
+    indexDocument: 'index.html',
+    errorDocument: 'error.html',
+    routingRules: [
+        {
+            redirect: {
+                httpRedirectCode: '301',
+                hostName: 'www.example.com',
+                replaceKeyPrefixWith: '/documents',
+            },
+            condition: {
+                httpErrorCodeReturnedEquals: 400,
+                keyPrefixEquals: '/docs',
+            },
+        },
+        {
+            redirect: {
+                protocol: 'http',
+                replaceKeyWith: 'error.html',
+            },
+            condition: {
+                keyPrefixEquals: 'ExamplePage.html',
+            },
+        },
+    ],
+};
 // create a dummy bucket to test getters and setters
 
 Object.keys(acl).forEach(
@@ -39,7 +66,8 @@ Object.keys(acl).forEach(
                 algorithm: 'sha1',
                 masterKeyId: 'somekey',
                 mandatory: true,
-            }, testVersioningConfiguration);
+            }, testVersioningConfiguration,
+            testWebsiteConfiguration);
 
         describe('serialize/deSerialize on BucketInfo class', () => {
             let serialized;
@@ -58,12 +86,14 @@ Object.keys(acl).forEach(
                     serverSideEncryption: dummyBucket._serverSideEncryption,
                     versioningConfiguration:
                         dummyBucket._versioningConfiguration,
+                    websiteConfiguration:
+                        dummyBucket._websiteConfiguration,
                 };
                 assert.strictEqual(serialized, JSON.stringify(bucketInfos));
                 done();
             });
 
-            it('should deSerialize into an  instance of BucketInfo', done => {
+            it('should deSerialize into an instance of BucketInfo', done => {
                 const deSerialized = BucketInfo.deSerialize(serialized);
                 assert.strictEqual(typeof deSerialized, 'object');
                 assert(deSerialized instanceof BucketInfo);
@@ -96,6 +126,15 @@ Object.keys(acl).forEach(
                 assert.deepStrictEqual(dummyBucket.getAcl(),
                                        acl[aclObj] || emptyAcl);
             });
+            it('this should have the right website config types', () => {
+                const websiteConfig = dummyBucket.getWebsiteConfiguration();
+                assert.strictEqual(typeof websiteConfig, 'object');
+                assert.strictEqual(typeof websiteConfig.indexDocument,
+                    'string');
+                assert.strictEqual(typeof websiteConfig.errorDocument,
+                    'string');
+                assert(Array.isArray(websiteConfig.routingRules));
+            });
         });
 
         describe('getters on BucketInfo class', () => {
@@ -119,6 +158,10 @@ Object.keys(acl).forEach(
             it('getVersioningConfiguration should return configuration', () => {
                 assert.deepStrictEqual(dummyBucket.getVersioningConfiguration(),
                         testVersioningConfiguration);
+            });
+            it('getWebsiteConfiguration should return configuration', () => {
+                assert.deepStrictEqual(dummyBucket.getWebsiteConfiguration(),
+                        testWebsiteConfiguration);
             });
         });
 
@@ -183,6 +226,18 @@ Object.keys(acl).forEach(
                     .setVersioningConfiguration(newVersioningConfiguration);
                 assert.deepStrictEqual(dummyBucket.getVersioningConfiguration(),
                     newVersioningConfiguration);
+            });
+            it('setWebsiteConfiguration should set configuration', () => {
+                const newWebsiteConfiguration = {
+                    redirectAllRequestsTo: {
+                        hostName: 'www.example.com',
+                        protocol: 'https',
+                    },
+                };
+                dummyBucket
+                    .setWebsiteConfiguration(newWebsiteConfiguration);
+                assert.deepStrictEqual(dummyBucket.getWebsiteConfiguration(),
+                    newWebsiteConfiguration);
             });
         });
     })
