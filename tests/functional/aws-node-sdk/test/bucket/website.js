@@ -6,8 +6,7 @@ import BucketUtility from '../../lib/utility/bucket-util';
 const bucketName = 'testbucketwebsitebucket';
 
 class _makeWebsiteConfig {
-    constructor(indexDocument, errorDocument, redirectAllReqHost,
-        redirectAllReqProtocol) {
+    constructor(indexDocument, errorDocument, redirectAllReqTo) {
         if (indexDocument) {
             this.IndexDocument = {};
             this.IndexDocument.Suffix = indexDocument;
@@ -16,12 +15,8 @@ class _makeWebsiteConfig {
             this.ErrorDocument = {};
             this.ErrorDocument.Key = errorDocument;
         }
-        if (redirectAllReqHost) {
-            this.RedirectAllRequestTo = {};
-            this.RedirectAllRequestTo.HostName = redirectAllReqHost;
-            if (redirectAllReqProtocol) {
-                this.RedirectAllRequestTo.Protocol = redirectAllReqProtocol;
-            }
+        if (redirectAllReqTo) {
+            this.RedirectAllRequestsTo = redirectAllReqTo;
         }
     }
     addRoutingRule(redirectParams, conditionParams) {
@@ -78,7 +73,7 @@ describe('PUT bucket website', () => {
         it('should put a bucket website successfully', done => {
             const config = new _makeWebsiteConfig('index.html');
             s3.putBucketWebsite({ Bucket: bucketName,
-                WebsiteConfiguration: config }, (err, res) => {
+                WebsiteConfiguration: config }, err => {
                 assert.strictEqual(err, null, `Found unexpected err ${err}`);
                 done();
             });
@@ -89,7 +84,7 @@ describe('PUT bucket website', () => {
             const config = new _makeWebsiteConfig();
             s3.putBucketWebsite({ Bucket: bucketName,
                 WebsiteConfiguration: config }, err => {
-                assert(err, 'Expected err but found one');
+                assert(err, 'Expected err but found none');
                 assert.strictEqual(err.code, 'InvalidArgument');
                 assert.strictEqual(err.statusCode, 400);
                 done();
