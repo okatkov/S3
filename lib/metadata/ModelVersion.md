@@ -39,6 +39,14 @@ Used to determine which splitter to use ( < 2 means old splitter)
 this._serverSideEncryption = serverSideEncryption || null;
 ```
 
+## Model version 4
+
+### Properties Added
+
+```
+this._websiteConfiguration = websiteConfiguration || null;
+```
+
 ### Usage
 
 Used to store the server bucket encryption info
