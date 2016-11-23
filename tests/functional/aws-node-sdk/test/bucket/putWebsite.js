@@ -70,7 +70,7 @@ describe('PUT bucket website', () => {
             });
         });
 
-        it('should put a bucket website successfully', done => {
+        it.only('should put a bucket website successfully', done => {
             const config = new _makeWebsiteConfig('index.html');
             s3.putBucketWebsite({ Bucket: bucketName,
                 WebsiteConfiguration: config }, err => {
