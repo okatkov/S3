@@ -90,7 +90,7 @@ describe('PUT bucket website', () => {
             });
         });
 
-        it.only('should return an InvalidRequest if both ' +
+        it('should return an InvalidRequest if both ' +
         'RedirectAllRequestsTo and IndexDocument are provided', done => {
             const redirectAllTo = {
                 HostName: 'test',
@@ -167,6 +167,62 @@ describe('PUT bucket website', () => {
                 Protocol: 'notvalidprotocol',
             };
             const config = new _makeWebsiteConfig(null, null, redirectAllTo);
+            s3.putBucketWebsite({ Bucket: bucketName,
+                WebsiteConfiguration: config }, err => {
+                assert(err, 'Expected err but found none');
+                assert.strictEqual(err.code, 'InvalidRequest');
+                assert.strictEqual(err.statusCode, 400);
+                done();
+            });
+        });
+
+        it('should return MalformedXML if Redirect HttpRedirectCode ' +
+        'is a string that does not contains a number', done => {
+            const config = new _makeWebsiteConfig('index.html');
+            config.addRoutingRule({ HttpRedirectCode: 'notvalidhttpcode' });
+            s3.putBucketWebsite({ Bucket: bucketName,
+                WebsiteConfiguration: config }, err => {
+                assert(err, 'Expected err but found none');
+                assert.strictEqual(err.code, 'MalformedXML');
+                assert.strictEqual(err.statusCode, 400);
+                done();
+            });
+        });
+
+        it('should return InvalidRequest if Redirect HttpRedirectCode ' +
+        'is not a valid http redirect code (3XX excepting 300)', done => {
+            const config = new _makeWebsiteConfig('index.html');
+            config.addRoutingRule({ HttpRedirectCode: '400' });
+            s3.putBucketWebsite({ Bucket: bucketName,
+                WebsiteConfiguration: config }, err => {
+                assert(err, 'Expected err but found none');
+                assert.strictEqual(err.code, 'InvalidRequest');
+                assert.strictEqual(err.statusCode, 400);
+                done();
+            });
+        });
+
+        it('should return InvalidRequest if Condition ' +
+        'HttpErrorCodeReturnedEquals is a string that does ' +
+        ' not contain a number', done => {
+            const condition = { HttpErrorCodeReturnedEquals: 'notvalidcode' };
+            const config = new _makeWebsiteConfig('index.html');
+            config.addRoutingRule({ HostName: 'test' }, condition);
+            s3.putBucketWebsite({ Bucket: bucketName,
+                WebsiteConfiguration: config }, err => {
+                assert(err, 'Expected err but found none');
+                assert.strictEqual(err.code, 'MalformedXML');
+                assert.strictEqual(err.statusCode, 400);
+                done();
+            });
+        });
+
+        it('should return InvalidRequest if Condition ' +
+        'HttpErrorCodeReturnedEquals is not a valid http' +
+        'error code (4XX or 5XX)', done => {
+            const condition = { HttpErrorCodeReturnedEquals: '300' };
+            const config = new _makeWebsiteConfig('index.html');
+            config.addRoutingRule({ HostName: 'test' }, condition);
             s3.putBucketWebsite({ Bucket: bucketName,
                 WebsiteConfiguration: config }, err => {
                 assert(err, 'Expected err but found none');
