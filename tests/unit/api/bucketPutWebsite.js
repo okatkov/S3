@@ -1,4 +1,3 @@
-import { errors } from 'arsenal';
 import assert from 'assert';
 
 import bucketPut from '../../../lib/api/bucketPut';
@@ -13,12 +12,9 @@ import metadata from '../../../lib/metadata/wrapper';
 const log = new DummyRequestLogger();
 const authInfo = makeAuthInfo('accessKey1');
 const bucketName = 'bucketname';
-// try commenting out namespace later after testing to see if it is necessary
-const namespace = 'default';
 const locationConstraint = 'us-west-1';
 const testBucketPutRequest = {
     bucketName,
-    namespace,
     headers: { host: `${bucketName}.s3.amazonaws.com` },
     url: '/',
 };
@@ -26,7 +22,6 @@ const testBucketPutRequest = {
 function _getPutWebsiteRequest(xml) {
     const request = {
         bucketName,
-        namespace,
         headers: {
             host: `${bucketName}.s3.amazonaws.com`,
         },
@@ -75,6 +70,3 @@ describe('putBucketWebsite API', () => {
         });
     });
 });
-// make a dummy request
-// call bucketPutWebsite with dummy request
-// call bucketMD to retrieve config from MD, confirm it was uploaded
