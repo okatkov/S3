@@ -77,16 +77,14 @@ export class WebsiteConfig {
         }
         if (redirectParams) {
             newRule.Redirect = {};
-            // can probably use map here right?
             Object.keys(redirectParams).forEach(key => {
-                newRule.Redirect[`${key}`] = redirectParams[`${key}`];
+                newRule.Redirect[key] = redirectParams[key];
             });
         }
         if (conditionParams) {
             newRule.Condition = {};
-            // can probably use map here right?
             Object.keys(conditionParams).forEach(key => {
-                newRule.Condition[`${key}`] = conditionParams[`${key}`];
+                newRule.Condition[key] = conditionParams[key];
             });
         }
         this.RoutingRules.push(newRule);
@@ -149,7 +147,7 @@ export class WebsiteConfig {
         }
 
         xml.push('</WebsiteConfiguration>');
-        console.log(xml.join(''))
+        console.log('xml from helper function', xml.join(''));
         return xml.join('');
     }
 }

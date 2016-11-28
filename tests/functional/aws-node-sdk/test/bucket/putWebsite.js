@@ -27,7 +27,7 @@ class _makeWebsiteConfig {
         if (redirectParams) {
             newRule.Redirect = {};
             Object.keys(redirectParams).forEach(key => {
-                newRule.Redirect[`${key}`] = redirectParams[`${key}`];
+                newRule.Redirect[key] = redirectParams[key];
             });
         }
         if (conditionParams) {
