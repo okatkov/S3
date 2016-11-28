@@ -33,7 +33,7 @@ class _makeWebsiteConfig {
         if (conditionParams) {
             newRule.Condition = {};
             Object.keys(conditionParams).forEach(key => {
-                newRule.Condition[`${key}`] = conditionParams[`${key}`];
+                newRule.Condition[key] = conditionParams[key];
             });
         }
         this.RoutingRules.push(newRule);
