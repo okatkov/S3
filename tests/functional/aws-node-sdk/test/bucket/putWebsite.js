@@ -38,7 +38,6 @@ class _makeWebsiteConfig {
         }
         this.RoutingRules.push(newRule);
     }
-    // another property to add is MD5...
 }
 
 describe('PUT bucket website', () => {
@@ -91,19 +90,25 @@ describe('PUT bucket website', () => {
             });
         });
 
-        it('should return InvalidArgument if IndexDocument or ' +
-        'RedirectAllRequestsTo is not provided', done => {
-            const config = new _makeWebsiteConfig();
+        it.only('should return an InvalidRequest if both ' +
+        'RedirectAllRequestsTo and IndexDocument are provided', done => {
+            const redirectAllTo = {
+                HostName: 'test',
+                Protocol: 'http',
+            };
+            const config = new _makeWebsiteConfig(null, null,
+            redirectAllTo);
+            config.addRoutingRule({ Protocol: 'http' });
             s3.putBucketWebsite({ Bucket: bucketName,
                 WebsiteConfiguration: config }, err => {
                 assert(err, 'Expected err but found none');
-                assert.strictEqual(err.code, 'InvalidArgument');
+                assert.strictEqual(err.code, 'InvalidRequest');
                 assert.strictEqual(err.statusCode, 400);
                 done();
             });
         });
 
-        it('should return some error if index has slash', done => {
+        it('should return InvalidArgument if index has slash', done => {
             const config = new _makeWebsiteConfig('in/dex.html');
             s3.putBucketWebsite({ Bucket: bucketName,
                 WebsiteConfiguration: config }, err => {
@@ -114,11 +119,54 @@ describe('PUT bucket website', () => {
             });
         });
 
-        it('should return an error if both ReplaceKeyWith and ' +
+        it('should return InvalidRequest if both ReplaceKeyWith and ' +
         'ReplaceKeyPrefixWith are present in same rule', done => {
             const config = new _makeWebsiteConfig('index.html');
             config.addRoutingRule({ ReplaceKeyPrefixWith: 'test',
             ReplaceKeyWith: 'test' });
+            s3.putBucketWebsite({ Bucket: bucketName,
+                WebsiteConfiguration: config }, err => {
+                assert(err, 'Expected err but found none');
+                assert.strictEqual(err.code, 'InvalidRequest');
+                assert.strictEqual(err.statusCode, 400);
+                done();
+            });
+        });
+
+        it('should return InvalidRequest if both ReplaceKeyWith and ' +
+        'ReplaceKeyPrefixWith are present in same rule', done => {
+            const config = new _makeWebsiteConfig('index.html');
+            config.addRoutingRule({ ReplaceKeyPrefixWith: 'test',
+            ReplaceKeyWith: 'test' });
+            s3.putBucketWebsite({ Bucket: bucketName,
+                WebsiteConfiguration: config }, err => {
+                assert(err, 'Expected err but found none');
+                assert.strictEqual(err.code, 'InvalidRequest');
+                assert.strictEqual(err.statusCode, 400);
+                done();
+            });
+        });
+
+        it('should return InvalidRequest if Redirect Protocol is ' +
+        'not http or https', done => {
+            const config = new _makeWebsiteConfig('index.html');
+            config.addRoutingRule({ Protocol: 'notvalidprotocol' });
+            s3.putBucketWebsite({ Bucket: bucketName,
+                WebsiteConfiguration: config }, err => {
+                assert(err, 'Expected err but found none');
+                assert.strictEqual(err.code, 'InvalidRequest');
+                assert.strictEqual(err.statusCode, 400);
+                done();
+            });
+        });
+
+        it('should return InvalidRequest if RedirectAllRequestsTo Protocol ' +
+        'is not http or https', done => {
+            const redirectAllTo = {
+                HostName: 'test',
+                Protocol: 'notvalidprotocol',
+            };
+            const config = new _makeWebsiteConfig(null, null, redirectAllTo);
             s3.putBucketWebsite({ Bucket: bucketName,
                 WebsiteConfiguration: config }, err => {
                 assert(err, 'Expected err but found none');
