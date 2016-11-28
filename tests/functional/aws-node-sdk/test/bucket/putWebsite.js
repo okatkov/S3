@@ -27,13 +27,13 @@ class _makeWebsiteConfig {
         if (redirectParams) {
             newRule.Redirect = {};
             Object.keys(redirectParams).forEach(key => {
-                newRule.Redirect[`${key}`] = redirectParams.key;
+                newRule.Redirect[`${key}`] = redirectParams[`${key}`];
             });
         }
         if (conditionParams) {
             newRule.Condition = {};
             Object.keys(conditionParams).forEach(key => {
-                newRule.Condition[`${key}`] = conditionParams.key;
+                newRule.Condition[`${key}`] = conditionParams[`${key}`];
             });
         }
         this.RoutingRules.push(newRule);
@@ -114,16 +114,15 @@ describe('PUT bucket website', () => {
             });
         });
 
-        it.only('should return an error if both ReplaceKeyWith and ' +
+        it('should return an error if both ReplaceKeyWith and ' +
         'ReplaceKeyPrefixWith are present in same rule', done => {
             const config = new _makeWebsiteConfig('index.html');
             config.addRoutingRule({ ReplaceKeyPrefixWith: 'test',
-            ReplaceKeyWith: 'test' })
+            ReplaceKeyWith: 'test' });
             s3.putBucketWebsite({ Bucket: bucketName,
                 WebsiteConfiguration: config }, err => {
-                console.log(err);
                 assert(err, 'Expected err but found none');
-                assert.strictEqual(err.code, 'InvalidArgument');
+                assert.strictEqual(err.code, 'InvalidRequest');
                 assert.strictEqual(err.statusCode, 400);
                 done();
             });
