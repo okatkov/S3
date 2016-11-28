@@ -122,6 +122,10 @@ Object.keys(acl).forEach(
                 assert(Array.isArray(dummyBucket.getAcl().READ));
                 assert(Array.isArray(dummyBucket.getAcl().READ_ACP));
             });
+            it('this should have the right acls', () => {
+                assert.deepStrictEqual(dummyBucket.getAcl(),
+                                       acl[aclObj] || emptyAcl);
+            });
             it('this should have the right website config types', () => {
                 const websiteConfig = dummyBucket.getWebsiteConfiguration();
                 assert.strictEqual(typeof websiteConfig, 'object');
