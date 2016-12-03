@@ -1,5 +1,8 @@
 import assert from 'assert';
-import { WebsiteConfig, RoutingRule } from '../../../lib/metadata/WebsiteConfig';
+import {
+    WebsiteConfiguration,
+    RoutingRule,
+} from '../../../lib/metadata/WebsiteConfig';
 
 const testRoutingRuleParams = {
     redirect: {
@@ -15,10 +18,10 @@ const testRoutingRuleParams = {
     },
 };
 
-describe.only('RoutingRule class', () => {
-    it('let\'s see what happens when we dont provide params', done => {
+describe('RoutingRule class', () => {
+    it('should initialize even if no parameters are provided', done => {
         const routingRule = new RoutingRule();
-        console.log(routingRule);
+        // assert undefineds?
         done();
     });
 

@@ -160,8 +160,12 @@ Object.keys(acl).forEach(
                         testVersioningConfiguration);
             });
             it('getWebsiteConfiguration should return configuration', () => {
-                assert.deepStrictEqual(dummyBucket.getWebsiteConfiguration(),
-                        testWebsiteConfiguration);
+                assert.deepStrictEqual(dummyBucket.getWebsiteConfiguration()
+                .getIndexDocument(), testWebsiteConfiguration.indexDocument);
+                assert.deepStrictEqual(dummyBucket.getWebsiteConfiguration()
+                .getErrorDocument(), testWebsiteConfiguration.errorDocument);
+                assert.deepStrictEqual(dummyBucket.getWebsiteConfiguration()
+                .getRoutingRules(), testWebsiteConfiguration.routingRules);
             });
         });
 
@@ -236,8 +240,9 @@ Object.keys(acl).forEach(
                 };
                 dummyBucket
                     .setWebsiteConfiguration(newWebsiteConfiguration);
-                assert.deepStrictEqual(dummyBucket.getWebsiteConfiguration(),
-                    newWebsiteConfiguration);
+                assert.deepStrictEqual(dummyBucket.getWebsiteConfiguration()
+                .getRedirectAllRequestsTo(), newWebsiteConfiguration.
+                redirectAllRequestsTo);
             });
         });
     })
