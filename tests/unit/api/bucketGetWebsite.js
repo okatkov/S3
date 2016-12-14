@@ -56,8 +56,11 @@ function _comparePutGetXml(sampleXml, done) {
 }
 
 describe('getBucketWebsite API', () => {
-    beforeEach(done => bucketPut(authInfo, testBucketPutRequest,
-        locationConstraint, log, done));
+    beforeEach(done => {
+        cleanup();
+        bucketPut(authInfo, testBucketPutRequest,
+        locationConstraint, log, done);
+    });
     afterEach(() => cleanup());
 
     it('should return same IndexDocument XML as uploaded', done => {
