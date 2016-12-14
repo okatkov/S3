@@ -10,7 +10,7 @@ from '../helpers';
 
 const log = new DummyRequestLogger();
 const authInfo = makeAuthInfo('accessKey1');
-const bucketName = 'bucketname';
+const bucketName = 'bucketGetWebsiteTestBucket';
 const locationConstraint = 'us-west-1';
 const testBucketPutRequest = {
     bucketName,
@@ -56,7 +56,6 @@ function _comparePutGetXml(sampleXml, done) {
 }
 
 describe('getBucketWebsite API', () => {
-    before(() => cleanup());
     beforeEach(done => bucketPut(authInfo, testBucketPutRequest,
         locationConstraint, log, done));
     afterEach(() => cleanup());
