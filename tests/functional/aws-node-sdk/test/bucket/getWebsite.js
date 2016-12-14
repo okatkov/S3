@@ -5,6 +5,22 @@ import BucketUtility from '../../lib/utility/bucket-util';
 import { WebsiteConfigTester } from '../../lib/utility/website-util';
 
 const bucketName = 'testgetwebsitebucket';
+const ruleRedirect1 = {
+    HostName: 'test',
+    ReplaceKeyPrefixWith: 'documents/',
+};
+const ruleCondition1 = {
+    KeyPrefixEquals: 'docs/',
+};
+const ruleRedirect2 = {
+    HttpRedirectCode: 302,
+};
+const ruleCondition2 = {
+    HttpErrorCodeReturnedEquals: 404,
+};
+const config = new WebsiteConfigTester('index.html', 'error.html');
+config.addRoutingRule(ruleRedirect1, ruleCondition1);
+config.addRoutingRule(ruleRedirect2, ruleCondition2);
 
 describe('GET bucket website', () => {
     withV4(sigCfg => {
@@ -24,7 +40,6 @@ describe('GET bucket website', () => {
 
         describe('with existing bucket configuration', () => {
             before(done => {
-                const config = new WebsiteConfigTester('index.html');
                 process.stdout.write('about to create bucket\n');
                 s3.createBucket({ Bucket: bucketName }, err => {
                     if (err) {
