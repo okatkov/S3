@@ -27,38 +27,15 @@ describe('GET bucket website', () => {
         const bucketUtil = new BucketUtility('default', sigCfg);
         const s3 = bucketUtil.s3;
 
-        afterEach(() => {
-            process.stdout.write('about to delete bucket\n');
-            return bucketUtil.deleteOne(bucketName)
-            .catch(err => {
-                if (err) {
-                    process.stdout.write('error in afterEach', err);
-                    throw err;
-                }
-            });
-        });
+        afterEach(() => bucketUtil.deleteOne(bucketName));
 
         describe('with existing bucket configuration', () => {
-            before(done => {
-                process.stdout.write('about to create bucket\n');
-                s3.createBucket({ Bucket: bucketName }, err => {
-                    if (err) {
-                        process.stdout.write('error creating bucket', err);
-                        return done(err);
-                    }
-                    process.stdout.write('about to put bucket website\n');
-                    s3.putBucketWebsite({ Bucket: bucketName,
-                        WebsiteConfiguration: config }, err => {
-                        if (err) {
-                            process.stdout.write('error putting bucket website',
-                                err);
-                            return done(err);
-                        }
-                        return done();
-                    });
-                    return undefined;
-                });
-            });
+            before(() =>
+                s3.createBucketAsync({ Bucket: bucketName })
+                .then(() => s3.putBucketWebsiteAsync({
+                    Bucket: bucketName,
+                    WebsiteConfiguration: config,
+                })));
 
             it('should return bucket website xml successfully', done => {
                 s3.getBucketWebsite({ Bucket: bucketName }, err => {
