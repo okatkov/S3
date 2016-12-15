@@ -867,7 +867,11 @@ describe('Multipart Upload API', () => {
         });
     });
 
-    it('should return an error if there is a part ' +
+    const itSkipIfSizeIssue = process.env.NODE_ENV === 'testing' ?
+        it.skip : it;
+    // in the ci, NODE_ENV is set to testing so we can do a functional
+    // test of a large MPU with small part sizes
+    itSkipIfSizeIssue('should return an error if there is a part ' +
     'other than the last part that is less than 5MB ' +
     'in size', done => {
         async.waterfall([

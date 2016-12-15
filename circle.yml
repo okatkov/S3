@@ -16,6 +16,7 @@ machine:
   environment:
     CXX: g++-4.9
     ENABLE_LOCAL_CACHE: true
+    NODE_ENV: testing
 
 dependencies:
   post:
