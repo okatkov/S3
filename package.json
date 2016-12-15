@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/scality/S3#readme",
   "dependencies": {
-    "arsenal": "scality/Arsenal",
+    "arsenal": "scality/Arsenal#ft/bucketDeleteWebsite",
     "async": "~1.4.2",
     "babel-core": "^6.5.2",
     "babel-plugin-transform-es2015-destructuring": "^6.5.2",
@@ -34,7 +34,7 @@
     "node-uuid": "^1.4.3",
     "ready-set-stream": "1.0.7",
     "sproxydclient": "scality/sproxydclient",
-    "utapi": "scality/utapi",
+    "utapi": "scality/utapi#ft/bucketGetWebsite",
     "utf8": "~2.1.1",
     "vaultclient": "scality/vaultclient",
     "werelogs": "scality/werelogs",
