@@ -4,7 +4,7 @@ import withV4 from '../support/withV4';
 import BucketUtility from '../../lib/utility/bucket-util';
 import { WebsiteConfigTester } from '../../lib/utility/website-util';
 
-const bucketName = 'testgetwebsitebucket';
+const bucketName = 'testgetwebsitetestbucket';
 const ruleRedirect1 = {
     HostName: 'test',
     ReplaceKeyPrefixWith: 'documents/',
@@ -13,10 +13,10 @@ const ruleCondition1 = {
     KeyPrefixEquals: 'docs/',
 };
 const ruleRedirect2 = {
-    HttpRedirectCode: 302,
+    HttpRedirectCode: '302',
 };
 const ruleCondition2 = {
-    HttpErrorCodeReturnedEquals: 404,
+    HttpErrorCodeReturnedEquals: '404',
 };
 const config = new WebsiteConfigTester('index.html', 'error.html');
 config.addRoutingRule(ruleRedirect1, ruleCondition1);
