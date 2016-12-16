@@ -15,7 +15,7 @@
         "us-west-2": ["s3-us-west-2.amazonaws.com"],
         "us-gov-west-1": ["s3-us-gov-west-1.amazonaws.com",
                           "s3-fips-us-gov-west-1.amazonaws.com"],
-        "localregion": ["localhost"],
+        "localregion": ["localhost", "[::1]"],
         "test-region": ["s3.scality.test"],
         "docker-region": ["s3.docker.test"]
     },
