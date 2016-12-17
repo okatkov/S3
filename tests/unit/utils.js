@@ -106,6 +106,7 @@ describe('utils.getAllEndpoints', () => {
         assert(allEndpoints.indexOf('s3-external-1.amazonaws.com') >= 0);
         assert(allEndpoints.indexOf('s3.us-east-1.amazonaws.com') >= 0);
         assert(allEndpoints.indexOf('localhost') >= 0);
+        assert(allEndpoints.indexOf('[::1]') >= 0);
     });
 });
 
