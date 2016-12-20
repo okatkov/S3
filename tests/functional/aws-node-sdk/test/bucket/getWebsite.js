@@ -38,9 +38,11 @@ describe('GET bucket website', () => {
                 })));
 
             it('should return bucket website xml successfully', done => {
-                s3.getBucketWebsite({ Bucket: bucketName }, err => {
+                s3.getBucketWebsite({ Bucket: bucketName }, (err, data) => {
                     assert.strictEqual(err, null,
                         `Found unexpected err ${err}`);
+                    const configObject = JSON.parse(JSON.stringify(config));
+                    assert.deepStrictEqual(data, configObject);
                     return done();
                 });
             });
